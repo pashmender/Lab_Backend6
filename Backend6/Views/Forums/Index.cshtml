@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Backend6.Models.ForumCategory>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@foreach (var forumCategory in Model)
+{
+    <div class="panel panel-default forum-category">
+        <div class="panel-heading">
+            @forumCategory.Name
+            @if (User.IsInRole(ApplicationRoles.Administrators))
+            {
+                <a asp-controller="ForumCategories" asp-action="Edit" asp-route-id="@forumCategory.Id">|  Edit</a>
+                <a asp-controller="ForumCategories" asp-action="Delete" asp-route-id="@forumCategory.Id">|  Delete</a>
+                <a asp-controller="Forums" asp-action="Create" asp-route-forumCategoryid="@forumCategory.Id">|  Create forum</a>
+            }
+        </div>
+        <table class="table table-striped">
+            <tbody>
+                @foreach (var forum in forumCategory.Forums)
+                {
+                    <tr>
+                        <td>
+                            <a  class="forum-name" asp-action="Details" asp-route-id="@forum.Id" asp-route-forumCategoryid="@forumCategory.Id">@forum.Name</a>
+                            @if (User.IsInRole(ApplicationRoles.Administrators))
+                            {
+                                <a asp-action="Edit" asp-route-id="@forum.Id" asp-route-forumCategoryid="@forumCategory.Id">| Edit</a>
+                                <a asp-action="Delete" asp-route-id="@forum.Id" asp-route-forumCategoryid="@forumCategory.Id">| Delete</a>
+                            }
+                            <p>@forum.Discription</p>
+                        </td>
+                        <td style="width: 150px">   
+                            @(forum.ForumTopics == null ? 0 : forum.ForumTopics.Count) topics
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@if (User.IsInRole(ApplicationRoles.Administrators))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><a asp-controller="ForumCategories" asp-action="Create">Create new category</a></div>
+    </div>
+}
